@@ -71,6 +71,7 @@
 
     .princess {
       position: absolute;
+      left: 100px;
       bottom: 80px;
       width: 64px;
       height: 64px;
@@ -202,9 +203,9 @@
   </div>
 
   <div id="controls">
-    <button onclick="moveLeft()">⬅️</button>
+    <button onclick="scrollLeft()">⬅️</button>
     <button onclick="jump()">⬆️</button>
-    <button onclick="moveRight()">➡️</button>
+    <button onclick="scrollRight()">➡️</button>
   </div>
 
   <script>
@@ -215,7 +216,7 @@
     const gameOver = document.getElementById('gameOver');
     const music = document.getElementById('bgMusic');
 
-    let princessX = 100;
+    let offset = 0;
     let isJumping = false;
     const jumpHeight = 100;
     let gameRunning = true;
@@ -225,23 +226,22 @@
       music.play().catch(() => {});
     }
 
-    function moveRight() {
+    function scrollRight() {
       if (!gameRunning) return;
       playMusic();
-      princessX += 20;
-      princess.style.left = princessX + 'px';
+      offset -= 20;
+      game.style.transform = `translateX(${offset}px)`;
       princess.classList.add('walk');
       setTimeout(() => princess.classList.remove('walk'), 400);
       spawnObstacle();
       checkSurprise();
     }
 
-    function moveLeft() {
+    function scrollLeft() {
       if (!gameRunning) return;
       playMusic();
-      princessX -= 20;
-      if (princessX < 0) princessX = 0;
-      princess.style.left = princessX + 'px';
+      offset += 20;
+      game.style.transform = `translateX(${offset}px)`;
       princess.classList.add('walk');
       setTimeout(() => princess.classList.remove('walk'), 400);
     }
@@ -280,7 +280,7 @@
       else if (rand < 0.66) obs.classList.add('block');
       else { obs.classList.add('bird'); obs.style.top = '100px'; }
 
-      obs.style.left = princessX + 500 + 'px';
+      obs.style.left = -offset + window.innerWidth + Math.random() * 300 + 'px';
       game.appendChild(obs);
 
       const check = setInterval(() => {
@@ -304,7 +304,7 @@
     }
 
     function checkSurprise() {
-      if (princessX > 800) {
+      if (-offset > 800) {
         msg.style.display = 'block';
         typeWriterEffect(dialogText);
       }

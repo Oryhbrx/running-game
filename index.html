@@ -34,7 +34,7 @@
       top: 40px;
       width: 200px;
       height: 100px;
-      background: url('https://i.ibb.co/j8SMg7r/pixel-cloud.png') no-repeat center;
+      background: url('https://i.imgur.com/qofgOAM.png') no-repeat center;
       background-size: contain;
       animation: floatCloud 60s linear infinite;
       z-index: 1;
@@ -50,7 +50,7 @@
       bottom: 0;
       width: 9999px;
       height: 80px;
-      background: url('https://i.ibb.co/SnQzvRY/pixel-grass-ground.png') repeat-x;
+      background: url('https://i.imgur.com/d2zWc4m.png') repeat-x;
       background-size: contain;
       z-index: 0;
     }
@@ -70,13 +70,13 @@
     }
 
     .princess {
-      position: absolute;
+      position: fixed;
       left: 100px;
       bottom: 80px;
-      width: 32px;
-      height: 32px;
+      width: 64px;
+      height: 64px;
       background: url('regine-sprite.png') no-repeat;
-      background-size: 128px 32px;
+      background-size: 256px 64px;
       z-index: 3;
       image-rendering: pixelated;
     }
@@ -86,12 +86,12 @@
     }
 
     .jumping {
-      background-position: -96px 0;
+      background-position: -192px 0;
     }
 
     @keyframes walkAnim {
       from { background-position: 0 0; }
-      to { background-position: -96px 0; }
+      to { background-position: -192px 0; }
     }
 
     .obstacle {
@@ -104,15 +104,15 @@
     }
 
     .manhole {
-      background-image: url('https://i.ibb.co/vzQkbz1/pixel-manhole.png');
+      background-image: url('https://i.imgur.com/hY7GrXT.png');
     }
 
     .block {
-      background-image: url('https://i.ibb.co/Qj4V6qZ/pixel-obstacle-block.png');
+      background-image: url('https://i.imgur.com/oGrtV7R.png');
     }
 
     .bird {
-      background-image: url('https://i.ibb.co/LprrxL2/pixel-bird.png');
+      background-image: url('https://i.imgur.com/eGJdAeN.png');
       top: 100px;
     }
 
@@ -194,6 +194,7 @@
   <div id="viewport">
     <div id="game">
       <div class="ground"></div>
+      <div class="cloud"></div>
       <div class="princess" id="princess"></div>
       <div id="birthdayMsg">🎉 Happy Birthday, Regine! 🎂</div>
       <div id="dialog"></div>

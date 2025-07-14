@@ -5,7 +5,6 @@
   <title>Princess Regine Runner 🎉</title>
   <style>
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       overflow: hidden;
@@ -21,17 +20,21 @@
     }
 
     #game {
-      position: relative;
-      width: 3000px;
+      position: absolute;
       height: 100vh;
+      width: 9999px;
+      display: flex;
+      align-items: flex-end;
+      background: #87CEEB;
+      transition: transform 0.2s;
     }
 
     .cloud {
       position: absolute;
-      top: 50px;
+      top: 40px;
       width: 200px;
       height: 100px;
-      background: url('https://i.imgur.com/w1sGfLf.png') no-repeat center;
+      background: url('https://i.ibb.co/j8SMg7r/pixel-cloud.png') no-repeat center;
       background-size: contain;
       animation: floatCloud 60s linear infinite;
       z-index: 1;
@@ -40,6 +43,16 @@
     @keyframes floatCloud {
       from { left: 100vw; }
       to { left: -200px; }
+    }
+
+    .ground {
+      position: absolute;
+      bottom: 0;
+      width: 9999px;
+      height: 80px;
+      background: url('https://i.ibb.co/SnQzvRY/pixel-grass-ground.png') repeat-x;
+      background-size: contain;
+      z-index: 0;
     }
 
     .sparkle {
@@ -56,26 +69,16 @@
       50% { transform: scale(1.2); opacity: 1; }
     }
 
-    .ground {
-      position: absolute;
-      bottom: 0;
-      width: 3000px;
-      height: 80px;
-      background: url('https://i.imgur.com/rNvrO0z.png') repeat-x;
-      background-size: cover;
-      z-index: 1;
-    }
-
     .princess {
       position: absolute;
+      left: 100px;
+      bottom: 80px;
       width: 32px;
       height: 32px;
       background: url('regine-sprite.png') no-repeat;
       background-size: 128px 32px;
-      bottom: 80px;
-      left: 100px;
+      z-index: 3;
       image-rendering: pixelated;
-      z-index: 2;
     }
 
     .walk {
@@ -96,19 +99,20 @@
       bottom: 80px;
       width: 40px;
       height: 40px;
-      background-size: cover;
+      background-size: contain;
+      background-repeat: no-repeat;
     }
 
     .manhole {
-      background: url('https://i.imgur.com/hY7GrXT.png') no-repeat center;
+      background-image: url('https://i.ibb.co/vzQkbz1/pixel-manhole.png');
     }
 
     .block {
-      background: url('https://i.imgur.com/oGrtV7R.png') no-repeat center;
+      background-image: url('https://i.ibb.co/Qj4V6qZ/pixel-obstacle-block.png');
     }
 
     .bird {
-      background: url('https://i.imgur.com/eGJdAeN.png') no-repeat center;
+      background-image: url('https://i.ibb.co/LprrxL2/pixel-bird.png');
       top: 100px;
     }
 
@@ -148,7 +152,6 @@
       font-weight: bold;
       color: hotpink;
       display: none;
-      animation: fadeIn 2s ease forwards;
       z-index: 20;
     }
 
@@ -181,11 +184,6 @@
       border-radius: 10px;
       z-index: 40;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
   </style>
 </head>
 <body>
@@ -195,9 +193,6 @@
 
   <div id="viewport">
     <div id="game">
-      <div class="cloud" style="top:40px; animation-delay: 0s;"></div>
-      <div class="cloud" style="top:100px; animation-delay: 20s;"></div>
-      <div class="cloud" style="top:160px; animation-delay: 40s;"></div>
       <div class="ground"></div>
       <div class="princess" id="princess"></div>
       <div id="birthdayMsg">🎉 Happy Birthday, Regine! 🎂</div>
@@ -220,12 +215,11 @@
     const gameOver = document.getElementById('gameOver');
     const music = document.getElementById('bgMusic');
 
-    let positionX = 100;
     let worldOffset = 0;
     let isJumping = false;
     const jumpHeight = 100;
     let gameRunning = true;
-    let dialogText = "Happiest birthday to you, someone close to my heart. I hope you liked this little surprise and that it brought a smile to your beautiful face. You’re truly a blessing in my life — so kind and gentle, yet incredibly strong and resilient. I admire you more than words can say.";
+    const dialogText = "Happiest birthday to you, someone close to my heart. I hope you liked this little surprise and that it brought a smile to your beautiful face. You’re truly a blessing in my life — so kind and gentle, yet incredibly strong and resilient. I admire you more than words can say.";
 
     function playMusic() {
       music.play().catch(() => {});
@@ -280,20 +274,14 @@
       const rand = Math.random();
       const obs = document.createElement('div');
       obs.classList.add('obstacle');
-      if (rand < 0.33) {
-        obs.classList.add('manhole');
-      } else if (rand < 0.66) {
-        obs.classList.add('block');
-      } else {
-        obs.classList.add('bird');
-        obs.style.top = '100px';
-      }
+      if (rand < 0.33) obs.classList.add('manhole');
+      else if (rand < 0.66) obs.classList.add('block');
+      else { obs.classList.add('bird'); obs.style.top = '100px'; }
 
-      const obsLeft = -worldOffset + window.innerWidth + Math.random() * 300;
-      obs.style.left = obsLeft + 'px';
+      obs.style.left = (-worldOffset + window.innerWidth + Math.random() * 300) + 'px';
       game.appendChild(obs);
 
-      const obsCheck = setInterval(() => {
+      const check = setInterval(() => {
         const obsRect = obs.getBoundingClientRect();
         const regineRect = princess.getBoundingClientRect();
         if (
@@ -302,14 +290,14 @@
           obsRect.bottom > regineRect.top &&
           obsRect.top < regineRect.bottom
         ) {
-          clearInterval(obsCheck);
+          clearInterval(check);
           triggerGameOver();
         }
       }, 50);
 
       setTimeout(() => {
-        clearInterval(obsCheck);
-        if (obs.parentNode) obs.remove();
+        clearInterval(check);
+        obs.remove();
       }, 4000);
     }
 
@@ -318,12 +306,6 @@
         msg.style.display = 'block';
         typeWriterEffect(dialogText);
       }
-    }
-
-    function triggerGameOver() {
-      gameRunning = false;
-      music.pause();
-      gameOver.style.display = 'block';
     }
 
     function typeWriterEffect(text) {
@@ -340,7 +322,16 @@
       }, 30);
     }
 
-    // Sparkles every half second
+    function triggerGameOver() {
+      gameRunning = false;
+      music.pause();
+      gameOver.style.display = 'block';
+    }
+
+    setInterval(() => {
+      if (gameRunning) spawnObstacle();
+    }, 2000);
+
     setInterval(() => {
       const sparkle = document.createElement('div');
       sparkle.className = 'sparkle';
@@ -349,10 +340,6 @@
       document.body.appendChild(sparkle);
       setTimeout(() => sparkle.remove(), 2000);
     }, 500);
-
-    setInterval(() => {
-      if (gameRunning) spawnObstacle();
-    }, 2000);
   </script>
 </body>
 </html>

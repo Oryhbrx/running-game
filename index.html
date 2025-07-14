@@ -70,8 +70,7 @@
     }
 
     .princess {
-      position: fixed;
-      left: 100px;
+      position: absolute;
       bottom: 80px;
       width: 64px;
       height: 64px;
@@ -216,7 +215,7 @@
     const gameOver = document.getElementById('gameOver');
     const music = document.getElementById('bgMusic');
 
-    let worldOffset = 0;
+    let princessX = 100;
     let isJumping = false;
     const jumpHeight = 100;
     let gameRunning = true;
@@ -229,8 +228,8 @@
     function moveRight() {
       if (!gameRunning) return;
       playMusic();
-      worldOffset -= 20;
-      game.style.transform = `translateX(${worldOffset}px)`;
+      princessX += 20;
+      princess.style.left = princessX + 'px';
       princess.classList.add('walk');
       setTimeout(() => princess.classList.remove('walk'), 400);
       spawnObstacle();
@@ -240,8 +239,9 @@
     function moveLeft() {
       if (!gameRunning) return;
       playMusic();
-      worldOffset += 20;
-      game.style.transform = `translateX(${worldOffset}px)`;
+      princessX -= 20;
+      if (princessX < 0) princessX = 0;
+      princess.style.left = princessX + 'px';
       princess.classList.add('walk');
       setTimeout(() => princess.classList.remove('walk'), 400);
     }
@@ -265,6 +265,7 @@
               clearInterval(fall);
               isJumping = false;
               princess.classList.remove('jumping');
+              princess.style.bottom = '80px';
             }
           }, 20);
         }
@@ -279,7 +280,7 @@
       else if (rand < 0.66) obs.classList.add('block');
       else { obs.classList.add('bird'); obs.style.top = '100px'; }
 
-      obs.style.left = (-worldOffset + window.innerWidth + Math.random() * 300) + 'px';
+      obs.style.left = princessX + 500 + 'px';
       game.appendChild(obs);
 
       const check = setInterval(() => {
@@ -303,7 +304,7 @@
     }
 
     function checkSurprise() {
-      if (-worldOffset > 800) {
+      if (princessX > 800) {
         msg.style.display = 'block';
         typeWriterEffect(dialogText);
       }
